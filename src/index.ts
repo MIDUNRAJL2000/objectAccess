@@ -10,7 +10,7 @@ function getNestedValue<T>(obj: T, path: string): any {
     if(typeof path !== 'string'){
         throw new Error('path should be a string')
     }
-    if(path.trim()! === ''){
+    if(path.trim().length === 0){
         throw new Error('path cannot be empty')
     }
 
