@@ -1,3 +1,7 @@
+type Key ={
+    [index: string] : any
+}
+
 function getNestedValue<T>(obj: T, path: string): any {
 
     if(typeof obj !== 'object' || obj === null){
@@ -6,12 +10,11 @@ function getNestedValue<T>(obj: T, path: string): any {
     if(typeof path !== 'string'){
         throw new Error('path should be a string')
     }
+    if(path.trim()! === ''){
+        throw new Error('path cannot be empty')
+    }
 
     const sections = path.split('.');
-
-    type Key ={
-        [key: string] : any
-    }
 
     let keys: Key = obj1
 
@@ -24,6 +27,7 @@ function getNestedValue<T>(obj: T, path: string): any {
     return keys
 }
 type User = {
+    user: {
     address: {
         street: string;
         city: string;
@@ -36,8 +40,10 @@ type User = {
         value: string
     }[]
 }
+}
 
 const obj1: User = {
+    user: {
     address: {
         street: '123 Main St',
         city: 'bostton',
@@ -50,11 +56,25 @@ contacts: [
         value: 'test@example.com'
     }
 ]
+    }
 }
 
-console.log(getNestedValue<User>(obj1,'address.street'))
-console.log(getNestedValue<User>(obj1, 'contacts.0.value'));
-console.log(getNestedValue<User>(obj1, 'contacts.1.value'));
+console.log(getNestedValue<User>(obj1,'user.address.street'))
+console.log(getNestedValue<User>(obj1, 'user.contacts.0.value'));
+console.log(getNestedValue<User>(obj1, 'user.contacts.1.value'));
 console.log(getNestedValue<User>(obj1, 'nonexistent.path'))
 
-console.log(getNestedValue<User>(obj1,'address.house'))
+console.log(getNestedValue<User>(obj1,'user.address.house'))
+
+try {
+    getNestedValue<User>(obj1, '');
+  } catch (e) {
+    console.log((e as Error).message);
+  }
+
+  try{
+    getNestedValue<User>(obj1, 123);
+  }
+  catch(e) {
+    console.log((e as Error).message)
+  }
